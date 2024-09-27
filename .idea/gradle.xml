@@ -26,6 +26,7 @@
             <option value="$PROJECT_DIR$/domain-implementations/JPA" />
             <option value="$PROJECT_DIR$/domain-implementations/file" />
             <option value="$PROJECT_DIR$/domain-implementations/jdbc" />
+            <option value="$PROJECT_DIR$/services" />
             <option value="$PROJECT_DIR$/utilities" />
           </set>
         </option>

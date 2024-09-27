@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/domain-implementations/file/gradle-shoe_shop.domain-implementations.file.test.iml" filepath="$PROJECT_DIR$/.idea/modules/domain-implementations/file/gradle-shoe_shop.domain-implementations.file.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/services/gradle-shoe_shop.services.main.iml" filepath="$PROJECT_DIR$/.idea/modules/services/gradle-shoe_shop.services.main.iml" />
     </modules>
   </component>
 </project>
