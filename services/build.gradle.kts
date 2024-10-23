@@ -5,6 +5,10 @@
 plugins {
     id("buildlogic.java-application-conventions")
 }
+repositories {
+    mavenCentral()
+}
+
 
 dependencies {
     implementation("org.apache.commons:commons-text")
@@ -14,7 +18,10 @@ dependencies {
     implementation("com.mysql:mysql-connector-j:8.3.0")
     implementation(project(":domain-implementations:file"))
     implementation("com.github.freva:ascii-table:1.8.0")
-
+    implementation ("com.athaydes.rawhttp:rawhttp-core:2.5.1")
+    implementation ("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation ("org.slf4j:slf4j-api:1.7.30")
+    implementation ("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.athaydes.rawhttp:rawhttp-core:2.6.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
 
