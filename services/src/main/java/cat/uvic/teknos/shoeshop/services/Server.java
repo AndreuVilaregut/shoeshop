@@ -37,20 +37,26 @@ public class Server {
     }
 
     private void handleClientRequest(Socket clientSocket) {
-        try {
-            RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
-            System.out.println("Received request: " + request.getStartLine());
+        new Thread(() -> {
+            try {
+                RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
+                System.out.println("Received request: " + request.getStartLine());
 
-            RequestRouter router = new RequestRouter(clientRepository);
-            RawHttpResponse<?> response = router.route(request);
+                RequestRouter router = new RequestRouter(clientRepository);
+                RawHttpResponse<?> response = router.route(request);
 
-            OutputStream outputStream = clientSocket.getOutputStream();
-            response.writeTo(outputStream);
-            outputStream.flush();
-
-            clientSocket.close();
-        } catch (IOException e) {
-            System.err.println("Error processing client request: " + e.getMessage());
-        }
+                OutputStream outputStream = clientSocket.getOutputStream();
+                response.writeTo(outputStream);
+                outputStream.flush();
+            } catch (IOException e) {
+                System.err.println("Error processing client request: " + e.getMessage());
+            } finally {
+                try {
+                    clientSocket.close();
+                } catch (IOException e) {
+                    System.err.println("Error closing client socket: " + e.getMessage());
+                }
+            }
+        }).start();
     }
 }

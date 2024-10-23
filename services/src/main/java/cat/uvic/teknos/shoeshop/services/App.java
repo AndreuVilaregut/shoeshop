@@ -7,10 +7,10 @@ import jakarta.persistence.Persistence;
 
 public class App {
     public static void main(String[] args) {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("your-persistence-unit-name");
+        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("shoeshopjpa");
         JpaClientRepository clientRepository = new JpaClientRepository(entityManagerFactory);
 
-        Server server = new Server(8080, clientRepository);
+        Server server = new Server(9998, clientRepository);
         server.start();
     }
 }

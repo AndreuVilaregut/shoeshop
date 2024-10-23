@@ -1,0 +1,41 @@
+GET http://localhost:9998/client
+Accept: application/json
+###
+GET http://localhost:9998/client/1
+Accept: application/json
+###
+DELETE http://localhost:9998/client/2
+Accept: application/json
+###
+PUT http://localhost:9998/client/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 2,
+  "dni": "12345678A",
+  "name": "Client A (Updated)",
+  "phone": "111222333",
+  "addresses": {
+    "location": "Street A (Updated)"
+  },
+  "shoeStores": {
+    "id": 1,
+    "name": "Shoe Store A (Updated)",
+
+  }
+}
+
+###
+POST http://localhost:9998/client
+Accept: application/json
+Content-Type: application/json
+
+{
+  "DNI": "11223344C",
+  "NAME": "Client C",
+  "PHONE": "333444555",
+  "ADDRESS_ID": 1,
+  "SHOE_STORE_ID": 2
+}
+###
