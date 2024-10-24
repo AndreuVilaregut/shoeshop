@@ -18,30 +18,40 @@ public class RequestRouter {
         String method = request.getMethod().toString();
         String path = request.getUri().getPath();
 
-        if (method.equals("GET")) {
-            if (path.equals("/client")) {
-                return clientController.getAllClients();
-            } else if (path.startsWith("/client/")) {
-                int clientId = Integer.parseInt(path.substring("/client/".length()));
-                return clientController.getClient(clientId);
+        try {
+            if (method.equals("GET")) {
+                if (path.equals("/client")) {
+                    return clientController.getAllClients();
+                } else if (path.startsWith("/client/")) {
+                    int clientId = extractClientId(path);
+                    return clientController.getClient(clientId);
+                }
+            } else if (method.equals("POST")) {
+                if (path.equals("/client")) {
+                    return clientController.createClient(request);
+                }
+            } else if (method.equals("PUT")) {
+                if (path.startsWith("/client/")) {
+                    int clientId = extractClientId(path);
+                    return clientController.updateClient(clientId, request);
+                }
+            } else if (method.equals("DELETE")) {
+                if (path.startsWith("/client/")) {
+                    int clientId = extractClientId(path);
+                    return clientController.deleteClient(clientId);
+                }
             }
-        } else if (method.equals("POST")) {
-            if (path.equals("/client")) {
-                return clientController.createClient(request);
-            }
-        } else if (method.equals("PUT")) {
-            if (path.startsWith("/client/")) {
-                int clientId = Integer.parseInt(path.substring("/client/".length()));
-                return clientController.updateClient(clientId, request);
-            }
-        } else if (method.equals("DELETE")) {
-            if (path.startsWith("/client/")) {
-                int clientId = Integer.parseInt(path.substring("/client/".length()));
-                return clientController.deleteClient(clientId);
-            }
-        }
 
-        return createResponse(404, "Not Found");
+            return createResponse(404, "Not Found");
+        } catch (NumberFormatException e) {
+            return createResponse(400, "Invalid Client ID");
+        } catch (Exception e) {
+            return createResponse(500, "Internal Server Error: " + e.getMessage());
+        }
+    }
+
+    private int extractClientId(String path) throws NumberFormatException {
+        return Integer.parseInt(path.substring("/client/".length()));
     }
 
     private RawHttpResponse<?> createResponse(int statusCode, String body) {
@@ -53,7 +63,15 @@ public class RequestRouter {
                     body);
         } catch (Exception e) {
             System.err.println("Error creating response: " + e.getMessage());
-            return null;
+            try {
+                return rawHttp.parseResponse("HTTP/1.1 500 Internal Server Error\n" +
+                        "Content-Type: text/plain\n" +
+                        "Content-Length: 21\n" +
+                        "\n" +
+                        "Internal Server Error");
+            } catch (Exception ignored) {
+                return null;
+            }
         }
     }
 
@@ -67,5 +85,4 @@ public class RequestRouter {
             default: return "Internal Server Error";
         }
     }
-
 }

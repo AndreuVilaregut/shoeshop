@@ -1,9 +1,8 @@
 package cat.uvic.teknos.shoeshop.models;
 
-import org.hibernate.annotations.Entity;
 
 import java.util.Set;
-@Entity
+
 public interface Client {
 
     int getId();

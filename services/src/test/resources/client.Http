@@ -32,10 +32,15 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "DNI": "11223344C",
-  "NAME": "Client C",
-  "PHONE": "333444555",
-  "ADDRESS_ID": 1,
-  "SHOE_STORE_ID": 2
+  "dni": "11223344C",
+  "name": "Client C",
+  "phone": "333444555",
+  "address": {
+    "id": 1
+  },
+  "shoeStore": {
+    "id": 2
+  }
 }
+
 ###

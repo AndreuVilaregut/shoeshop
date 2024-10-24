@@ -58,6 +58,10 @@ public class ClientController {
             String body = readRequestBody(request);
             Client newClient = objectMapper.readValue(body, Client.class);
 
+            if (newClient.getName() == null || newClient.getName().isEmpty()) {
+                return createResponse(400, "Client name is required");
+            }
+
             clientRepository.save(newClient);
 
             return createResponse(201, "Client created with ID: " + newClient.getId());
@@ -67,7 +71,6 @@ public class ClientController {
             return createResponse(500, "Internal Server Error: " + e.getMessage());
         }
     }
-
 
     private String readRequestBody(RawHttpRequest request) throws IOException {
         InputStream inputStream = request.getBody().get().asRawStream();
@@ -102,8 +105,13 @@ public class ClientController {
             return createResponse(404, "Client not found");
         }
 
-        clientRepository.delete(client);
-        return createResponse(200, "Client with ID " + clientId + " deleted");
+        try {
+            clientRepository.delete(client);
+            return createResponse(200, "Client with ID " + clientId + " deleted");
+        } catch (Exception e) {
+            System.err.println("Error deleting client: " + e.getMessage());
+            return createResponse(500, "Internal Server Error: " + e.getMessage());
+        }
     }
 
     private RawHttpResponse<?> createResponse(int statusCode, String body) {
