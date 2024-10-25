@@ -27,6 +27,8 @@ public class ClientController {
     public RawHttpResponse<?> getClient(int clientId) {
         Client client = clientRepository.get(clientId);
         if (client != null) {
+
+            //json
             return createResponse(200, "Client details for ID " + clientId + ": " + client.toString());
         } else {
             return createResponse(404, "Client not found");

@@ -35,9 +35,16 @@ public class JpaClientRepository implements ClientRepository {
     @Override
     public Client get(Integer id) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        Client client = entityManager.find(Client.class, id);
-        entityManager.close();
-        return client;
+        try {
+            Client client = entityManager.find(cat.uvic.teknos.shoeshop.domain.jpa.models.Client.class, id);
+            return client;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            entityManager.close();
+        }
+
     }
 
     @Override
