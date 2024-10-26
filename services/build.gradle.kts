@@ -23,6 +23,7 @@ dependencies {
     implementation ("javax.persistence:javax.persistence-api:2.2")
     implementation ("com.fasterxml.jackson.core:jackson-databind:2.13.1")
     implementation ("jakarta.persistence:jakarta.persistence-api:3.1.0")
+    implementation ("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
     implementation ("org.slf4j:slf4j-api:1.7.30")
     implementation ("org.slf4j:slf4j-simple:1.7.30")
     implementation("com.athaydes.rawhttp:rawhttp-core:2.6.0")

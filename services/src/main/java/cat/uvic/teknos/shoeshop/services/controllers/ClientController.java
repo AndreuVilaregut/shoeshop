@@ -1,5 +1,6 @@
 package cat.uvic.teknos.shoeshop.services.controllers;
 
+import cat.uvic.teknos.shoeshop.services.utils.Mappers;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
@@ -17,11 +18,11 @@ import java.util.Optional;
 
 public class ClientController {
     private final ClientRepository clientRepository;
-    private final ObjectMapper objectMapper; // ObjectMapper com a variable d'instància
+    private final ObjectMapper objectMapper; // ObjectMapper como variable de instancia
 
     public ClientController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
-        this.objectMapper = new ObjectMapper(); // Inicialització de l'ObjectMapper
+        this.objectMapper = Mappers.get(); // Inicializa el ObjectMapper desde Mappers
     }
 
     public RawHttpResponse<?> getClient(int clientId) {
@@ -58,14 +59,13 @@ public class ClientController {
             }
 
             String body = readRequestBody(request);
-            Client newClient = objectMapper.readValue(body, Client.class);
+            Client newClient = objectMapper.readValue(body, cat.uvic.teknos.shoeshop.domain.jpa.models.Client.class);
 
             if (newClient.getName() == null || newClient.getName().isEmpty()) {
                 return createResponse(400, "Client name is required");
             }
 
             clientRepository.save(newClient);
-
             return createResponse(201, "Client created with ID: " + newClient.getId());
         } catch (IOException e) {
             return createResponse(400, "Invalid request: " + e.getMessage());
@@ -73,6 +73,7 @@ public class ClientController {
             return createResponse(500, "Internal Server Error: " + e.getMessage());
         }
     }
+
 
     private String readRequestBody(RawHttpRequest request) throws IOException {
         InputStream inputStream = request.getBody().get().asRawStream();
@@ -102,18 +103,16 @@ public class ClientController {
     }
 
     public RawHttpResponse<?> deleteClient(int clientId) {
-        Client client = clientRepository.get(clientId);
-        if (client == null) {
+        Client clientToDelete = clientRepository.get(clientId);
+
+        if (clientToDelete == null) {
+            System.out.println("Client not found with ID " + clientId);
             return createResponse(404, "Client not found");
         }
 
-        try {
-            clientRepository.delete(client);
-            return createResponse(200, "Client with ID " + clientId + " deleted");
-        } catch (Exception e) {
-            System.err.println("Error deleting client: " + e.getMessage());
-            return createResponse(500, "Internal Server Error: " + e.getMessage());
-        }
+        clientRepository.delete(clientToDelete);
+        System.out.println("Deleted client with ID " + clientId);
+        return createResponse(200, "Client with ID " + clientId + " deleted");
     }
 
     private RawHttpResponse<?> createResponse(int statusCode, String body) {

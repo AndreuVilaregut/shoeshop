@@ -36,11 +36,11 @@ public class RequestRouter {
                     return clientController.updateClient(clientId, request);
                 }
             } else if (method.equals("DELETE")) {
-                if (path.startsWith("/client/")) {
-                    int clientId = extractClientId(path);
-                    return clientController.deleteClient(clientId);
-                }
+            if (path.startsWith("/client/")) {
+                int clientId = extractClientId(path);
+                return clientController.deleteClient(clientId);
             }
+        }
 
             return createResponse(404, "Not Found");
         } catch (NumberFormatException e) {

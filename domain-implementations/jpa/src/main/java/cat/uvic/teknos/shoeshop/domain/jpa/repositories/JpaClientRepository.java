@@ -27,9 +27,24 @@ public class JpaClientRepository implements ClientRepository {
     public void delete(Client model) {
         var entityManager = entityManagerFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.remove(entityManager.contains(model) ? model : entityManager.merge(model));
-        entityManager.getTransaction().commit();
-        entityManager.close();
+        try {
+            Client clientToDelete = entityManager.find(cat.uvic.teknos.shoeshop.domain.jpa.models.Client.class, model.getId()); // Comprovació addicional
+
+            if (clientToDelete != null) {
+                entityManager.remove(entityManager.contains(model) ? model : entityManager.merge(model));
+                System.out.println("Client deleted with ID: " + model.getId());
+            } else {
+                System.out.println("Client not found for deletion with ID: " + model.getId());
+            }
+
+            entityManager.getTransaction().commit();
+        } catch (Exception e) {
+            entityManager.getTransaction().rollback();
+            System.err.println("Error deleting client: " + e.getMessage());
+            throw e;
+        } finally {
+            entityManager.close();
+        }
     }
 
     @Override

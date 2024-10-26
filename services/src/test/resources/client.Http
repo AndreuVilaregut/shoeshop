@@ -4,7 +4,7 @@ Accept: application/json
 GET http://localhost:9998/client/1
 Accept: application/json
 ###
-DELETE http://localhost:9998/client/2
+DELETE http://localhost:9998/client/1
 Accept: application/json
 ###
 PUT http://localhost:9998/client/2
@@ -32,14 +32,11 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "dni": "11223344C",
-  "name": "Client C",
-  "phone": "333444555",
+  "dni": "12345678A",
+  "name": "John Doe",
+  "phone": "555-1234",
   "address": {
-    "id": 1
-  },
-  "shoeStore": {
-    "id": 2
+    "location": "Near the central park"
   }
 }
 

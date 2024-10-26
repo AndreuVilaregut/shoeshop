@@ -39,15 +39,16 @@ public class Server {
     private void handleClientRequest(Socket clientSocket) {
         new Thread(() -> {
             try {
-                RawHttpRequest request = http.parseRequest(clientSocket.getInputStream());
+                RawHttpRequest request = http.parseRequest(clientSocket.getInputStream()).eagerly();
                 System.out.println("Received request: " + request.getStartLine());
 
                 RequestRouter router = new RequestRouter(clientRepository);
                 RawHttpResponse<?> response = router.route(request);
 
-                OutputStream outputStream = clientSocket.getOutputStream();
-                response.writeTo(outputStream);
-                outputStream.flush();
+                try (OutputStream outputStream = clientSocket.getOutputStream()) {
+                    response.writeTo(outputStream);
+                    outputStream.flush();
+                }
             } catch (IOException e) {
                 System.err.println("Error processing client request: " + e.getMessage());
             } finally {
