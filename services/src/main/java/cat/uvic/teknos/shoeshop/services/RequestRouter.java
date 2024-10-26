@@ -46,6 +46,7 @@ public class RequestRouter {
         } catch (NumberFormatException e) {
             return createResponse(400, "Invalid Client ID");
         } catch (Exception e) {
+
             return createResponse(500, "Internal Server Error: " + e.getMessage());
         }
     }

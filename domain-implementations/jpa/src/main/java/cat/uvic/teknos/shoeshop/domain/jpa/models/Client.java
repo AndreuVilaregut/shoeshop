@@ -20,7 +20,7 @@ public class Client implements cat.uvic.teknos.shoeshop.models.Client {
     @Column(name = "PHONE")
     private String phone;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(targetEntity = cat.uvic.teknos.shoeshop.domain.jpa.models.Address.class,fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "ADDRESS_ID")
     private Address address;
 
