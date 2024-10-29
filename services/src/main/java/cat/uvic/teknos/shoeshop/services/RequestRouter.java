@@ -6,8 +6,11 @@ import rawhttp.core.RawHttpResponse;
 import cat.uvic.teknos.shoeshop.services.controllers.ClientController;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
 
-public class RequestRouter {
-    private final RawHttp rawHttp = new RawHttp();
+public interface RequestRouter {
+
+    RawHttpResponse<?> execRequest(RawHttpRequest request);
+
+    /*private final RawHttp rawHttp = new RawHttp();
     private final ClientController clientController;
 
     public RequestRouter(ClientRepository clientRepository) {
@@ -85,5 +88,5 @@ public class RequestRouter {
             case 404: return "Not Found";
             default: return "Internal Server Error";
         }
-    }
+    }*/
 }

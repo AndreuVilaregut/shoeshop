@@ -10,8 +10,40 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import cat.uvic.teknos.shoeshop.services.exceptions.ServerException;
+import rawhttp.core.RawHttp;
+import rawhttp.core.RawHttpOptions;
+import java.io.IOException;
+import java.net.ServerSocket;
+
 public class Server {
-    private int port;
+
+    public final int PORT = 8080;
+    private final RequestRouter requestRouter;
+    private boolean SHUTDOWN_SERVER;
+
+    public Server(RequestRouter requestRouter) {
+        this.requestRouter = requestRouter;
+    }
+
+    public  void start() {
+        try (var serverSocket = new ServerSocket(PORT)) {
+            while (!SHUTDOWN_SERVER) {
+                try (var clientSocket = serverSocket.accept()) {
+                    var rawHttp = new RawHttp(RawHttpOptions.newBuilder().doNotInsertHostHeaderIfMissing().build());
+                    var request = rawHttp.parseRequest(clientSocket.getInputStream()).eagerly();
+
+                    var response = requestRouter.execRequest(request);
+
+                    response.writeTo(clientSocket.getOutputStream());
+                }
+            }
+        } catch (IOException e) {
+            throw new ServerException(e);
+        }
+    }
+
+    /*private int port;
     private RawHttp http;
     private ClientRepository clientRepository;
 
@@ -59,5 +91,5 @@ public class Server {
                 }
             }
         }).start();
-    }
+    }*/
 }
