@@ -1,0 +1,33 @@
+###
+GET http://localhost:9998/shoestore
+Accept: application/json
+###
+###
+GET http://localhost:9998/shoestore/2
+Accept: application/json
+###
+###
+DELETE http://localhost:9998/shoestore/2
+Accept: application/json
+###
+###
+PUT http://localhost:9998/shoestore/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 2,
+  "name": "Shoe Store B (Updated)",
+  "location": "Street B (Updated)"
+}
+###
+###
+POST http://localhost:9998/shoestore
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "New Shoe Store",
+  "location": "New Street"
+}
+###

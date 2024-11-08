@@ -77,12 +77,12 @@ public class Client implements cat.uvic.teknos.shoeshop.models.Client {
     }
 
     @Override
-    public cat.uvic.teknos.shoeshop.models.Address getAddresses() {
+    public cat.uvic.teknos.shoeshop.models.Address getAddress() {
         return address;
     }
 
     @Override
-    public void setAddresses(cat.uvic.teknos.shoeshop.models.Address address) {
+    public void setAddress(cat.uvic.teknos.shoeshop.models.Address address) {
         this.address = (Address) address;
     }
 

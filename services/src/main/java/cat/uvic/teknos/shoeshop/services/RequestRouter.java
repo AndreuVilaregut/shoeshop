@@ -1,20 +1,21 @@
 package cat.uvic.teknos.shoeshop.services;
 
+import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
 import cat.uvic.teknos.shoeshop.services.controllers.ClientController;
+import cat.uvic.teknos.shoeshop.services.controllers.ShoeStoreController;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
 
-public interface RequestRouter {
-
-    RawHttpResponse<?> execRequest(RawHttpRequest request);
-
-    /*private final RawHttp rawHttp = new RawHttp();
+public class RequestRouter {
+    private final RawHttp rawHttp = new RawHttp();
     private final ClientController clientController;
+    private final ShoeStoreController shoeStoreController;
 
-    public RequestRouter(ClientRepository clientRepository) {
+    public RequestRouter(ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository) {
         this.clientController = new ClientController(clientRepository);
+        this.shoeStoreController = new ShoeStoreController(shoeStoreRepository);
     }
 
     public RawHttpResponse<?> route(RawHttpRequest request) {
@@ -22,6 +23,7 @@ public interface RequestRouter {
         String path = request.getUri().getPath();
 
         try {
+            // Client routes
             if (method.equals("GET")) {
                 if (path.equals("/client")) {
                     return clientController.getAllClients();
@@ -29,33 +31,48 @@ public interface RequestRouter {
                     int clientId = extractClientId(path);
                     return clientController.getClient(clientId);
                 }
-            } else if (method.equals("POST")) {
-                if (path.equals("/client")) {
-                    return clientController.createClient(request);
-                }
-            } else if (method.equals("PUT")) {
-                if (path.startsWith("/client/")) {
-                    int clientId = extractClientId(path);
-                    return clientController.updateClient(clientId, request);
-                }
-            } else if (method.equals("DELETE")) {
-            if (path.startsWith("/client/")) {
+            } else if (method.equals("POST") && path.equals("/client")) {
+                return clientController.createClient(request);
+            } else if (method.equals("PUT") && path.startsWith("/client/")) {
+                int clientId = extractClientId(path);
+                return clientController.updateClient(clientId, request);
+            } else if (method.equals("DELETE") && path.startsWith("/client/")) {
                 int clientId = extractClientId(path);
                 return clientController.deleteClient(clientId);
             }
-        }
+
+            // ShoeStore routes
+            else if (method.equals("GET")) {
+                if (path.equals("/shoestore")) {
+                    return shoeStoreController.getAllShoeStores();
+                } else if (path.startsWith("/shoestore/")) {
+                    int shoeStoreId = extractShoeStoreId(path);
+                    return shoeStoreController.getShoeStore(shoeStoreId);
+                }
+            } else if (method.equals("POST") && path.equals("/shoestore")) {
+                return shoeStoreController.createShoeStore(request);
+            } else if (method.equals("PUT") && path.startsWith("/shoestore/")) {
+                int shoeStoreId = extractShoeStoreId(path);
+                return shoeStoreController.updateShoeStore(shoeStoreId, request);
+            } else if (method.equals("DELETE") && path.startsWith("/shoestore/")) {
+                int shoeStoreId = extractShoeStoreId(path);
+                return shoeStoreController.deleteShoeStore(shoeStoreId);
+            }
 
             return createResponse(404, "Not Found");
         } catch (NumberFormatException e) {
-            return createResponse(400, "Invalid Client ID");
+            return createResponse(400, "Invalid ID");
         } catch (Exception e) {
-
             return createResponse(500, "Internal Server Error: " + e.getMessage());
         }
     }
 
     private int extractClientId(String path) throws NumberFormatException {
         return Integer.parseInt(path.substring("/client/".length()));
+    }
+
+    private int extractShoeStoreId(String path) throws NumberFormatException {
+        return Integer.parseInt(path.substring("/shoestore/".length()));
     }
 
     private RawHttpResponse<?> createResponse(int statusCode, String body) {
@@ -88,5 +105,5 @@ public interface RequestRouter {
             case 404: return "Not Found";
             default: return "Internal Server Error";
         }
-    }*/
+    }
 }

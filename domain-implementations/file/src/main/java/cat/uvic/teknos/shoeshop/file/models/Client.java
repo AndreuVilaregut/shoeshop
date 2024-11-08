@@ -58,12 +58,12 @@ public class Client implements cat.uvic.teknos.shoeshop.models.Client, Serializa
     }
 
     @Override
-    public Address getAddresses() {
+    public Address getAddress() {
         return addresses;
     }
 
     @Override
-    public void setAddresses(Address addresses) {
+    public void setAddress(Address addresses) {
         this.addresses=addresses;
     }
 

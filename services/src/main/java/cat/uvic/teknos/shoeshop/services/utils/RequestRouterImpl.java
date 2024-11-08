@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public class RequestRouterImpl implements RequestRouter {
+public class RequestRouterImpl {
     private static final RawHttp rawHttp = new RawHttp();
     private final Map<String, Controller> controllers;
 
@@ -18,7 +18,6 @@ public class RequestRouterImpl implements RequestRouter {
         this.controllers = controllers;
     }
 
-    @Override
     public RawHttpResponse<?> execRequest(RawHttpRequest request) {
         var path = request.getUri().getPath();
         var method = request.getMethod();

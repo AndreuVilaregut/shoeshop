@@ -4,53 +4,24 @@ import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
+import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import cat.uvic.teknos.shoeshop.services.exceptions.ServerException;
-import rawhttp.core.RawHttp;
-import rawhttp.core.RawHttpOptions;
-import java.io.IOException;
-import java.net.ServerSocket;
-
 public class Server {
-
-    public final int PORT = 8080;
-    private final RequestRouter requestRouter;
-    private boolean SHUTDOWN_SERVER;
-
-    public Server(RequestRouter requestRouter) {
-        this.requestRouter = requestRouter;
-    }
-
-    public  void start() {
-        try (var serverSocket = new ServerSocket(PORT)) {
-            while (!SHUTDOWN_SERVER) {
-                try (var clientSocket = serverSocket.accept()) {
-                    var rawHttp = new RawHttp(RawHttpOptions.newBuilder().doNotInsertHostHeaderIfMissing().build());
-                    var request = rawHttp.parseRequest(clientSocket.getInputStream()).eagerly();
-
-                    var response = requestRouter.execRequest(request);
-
-                    response.writeTo(clientSocket.getOutputStream());
-                }
-            }
-        } catch (IOException e) {
-            throw new ServerException(e);
-        }
-    }
-
-    /*private int port;
+    private int port;
     private RawHttp http;
     private ClientRepository clientRepository;
+    private ShoeStoreRepository shoeStoreRepository; // Add this field
 
-    public Server(int port, ClientRepository clientRepository) {
+    public Server(int port, ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository) {
         this.port = port;
         this.http = new RawHttp();
         this.clientRepository = clientRepository;
+        this.shoeStoreRepository = shoeStoreRepository; // Initialize the repository
     }
 
     public void start() {
@@ -74,7 +45,8 @@ public class Server {
                 RawHttpRequest request = http.parseRequest(clientSocket.getInputStream()).eagerly();
                 System.out.println("Received request: " + request.getStartLine());
 
-                RequestRouter router = new RequestRouter(clientRepository);
+                // Pass both repositories to RequestRouter
+                RequestRouter router = new RequestRouter(clientRepository, shoeStoreRepository);
                 RawHttpResponse<?> response = router.route(request);
 
                 try (OutputStream outputStream = clientSocket.getOutputStream()) {
@@ -91,5 +63,5 @@ public class Server {
                 }
             }
         }).start();
-    }*/
+    }
 }

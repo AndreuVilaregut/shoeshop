@@ -25,20 +25,23 @@ public class JpaClientRepository implements ClientRepository {
     }
     @Override
     public void delete(Client model) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        var entityManager = entityManagerFactory.createEntityManager();
+        entityManager.getTransaction().begin();
         try {
-            entityManager.getTransaction().begin();
-
-            Client clientToDelete = entityManager.find(cat.uvic.teknos.shoeshop.domain.jpa.models.Client.class, model.getId());
+            Client clientToDelete = entityManager.find(cat.uvic.teknos.shoeshop.domain.jpa.models.Client.class, model.getId()); // Comprovació addicional
 
             if (clientToDelete != null) {
-                entityManager.remove(clientToDelete);
+                entityManager.remove(entityManager.contains(model) ? model : entityManager.merge(model));
+                System.out.println("Client deleted with ID: " + model.getId());
+            } else {
+                System.out.println("Client not found for deletion with ID: " + model.getId());
             }
 
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             entityManager.getTransaction().rollback();
-            throw new RuntimeException("Error deleting client: " + e.getMessage(), e);
+            System.err.println("Error deleting client: " + e.getMessage());
+            throw e;
         } finally {
             entityManager.close();
         }
@@ -69,4 +72,3 @@ public class JpaClientRepository implements ClientRepository {
         return clients;
     }
 }
-
