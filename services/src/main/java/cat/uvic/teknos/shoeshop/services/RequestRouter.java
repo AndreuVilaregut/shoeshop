@@ -1,5 +1,6 @@
 package cat.uvic.teknos.shoeshop.services;
 
+import cat.uvic.teknos.shoeshop.repositories.ModelRepository;
 import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
@@ -13,7 +14,7 @@ public class RequestRouter {
     private final ClientController clientController;
     private final ShoeStoreController shoeStoreController;
 
-    public RequestRouter(ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository) {
+    public RequestRouter(ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository, ModelRepository modelRepository) {
         this.clientController = new ClientController(clientRepository);
         this.shoeStoreController = new ShoeStoreController(shoeStoreRepository);
     }

@@ -8,14 +8,6 @@ import cat.uvic.teknos.shoeshop.models.Client;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import cat.uvic.teknos.shoeshop.models.Client;
-import cat.uvic.teknos.shoeshop.models.ModelFactory;
-import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
-import cat.uvic.teknos.shoeshop.repositories.RepositoryFactory;
-import cat.uvic.teknos.shoeshop.services.utils.Mappers;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

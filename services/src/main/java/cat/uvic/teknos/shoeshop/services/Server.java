@@ -5,6 +5,7 @@ import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
 import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
+import cat.uvic.teknos.shoeshop.repositories.ModelRepository;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,13 +16,15 @@ public class Server {
     private int port;
     private RawHttp http;
     private ClientRepository clientRepository;
-    private ShoeStoreRepository shoeStoreRepository; // Add this field
+    private ShoeStoreRepository shoeStoreRepository;
+    private ModelRepository modelRepository; // Añadir el repositorio de modelos
 
-    public Server(int port, ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository) {
+    public Server(int port, ClientRepository clientRepository, ShoeStoreRepository shoeStoreRepository, ModelRepository modelRepository) {
         this.port = port;
         this.http = new RawHttp();
         this.clientRepository = clientRepository;
-        this.shoeStoreRepository = shoeStoreRepository; // Initialize the repository
+        this.shoeStoreRepository = shoeStoreRepository;
+        this.modelRepository = modelRepository; // Inicializar el repositorio de modelos
     }
 
     public void start() {
@@ -45,8 +48,7 @@ public class Server {
                 RawHttpRequest request = http.parseRequest(clientSocket.getInputStream()).eagerly();
                 System.out.println("Received request: " + request.getStartLine());
 
-                // Pass both repositories to RequestRouter
-                RequestRouter router = new RequestRouter(clientRepository, shoeStoreRepository);
+                RequestRouter router = new RequestRouter(clientRepository, shoeStoreRepository, modelRepository);
                 RawHttpResponse<?> response = router.route(request);
 
                 try (OutputStream outputStream = clientSocket.getOutputStream()) {

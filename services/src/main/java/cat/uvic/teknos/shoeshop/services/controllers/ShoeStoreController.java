@@ -1,12 +1,13 @@
 package cat.uvic.teknos.shoeshop.services.controllers;
 
-import cat.uvic.teknos.shoeshop.domain.jpa.models.ShoeStore;
 import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
 import cat.uvic.teknos.shoeshop.services.utils.Mappers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
+import cat.uvic.teknos.shoeshop.models.ShoeStore;
+import cat.uvic.teknos.shoeshop.repositories.ShoeStoreRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ShoeStoreController {
     }
 
     public RawHttpResponse<?> getAllShoeStores() {
-        Set<cat.uvic.teknos.shoeshop.models.ShoeStore> shoeStores = shoeStoreRepository.getAll();
+        Set<ShoeStore> shoeStores = shoeStoreRepository.getAll();
         if (shoeStores.isEmpty()) {
             return createResponse(204, "No shoe stores available");
         }
