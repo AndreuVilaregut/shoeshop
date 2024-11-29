@@ -17,8 +17,8 @@ public interface Client {
     String getPhone();
     void setPhone(String phone);
 
-    Address getAddress();
-    void setAddress(Address addresses);
+    Address getAddresses();
+    void setAddresses(Address addresses);
 
     ShoeStore getShoeStores();
     void setShoeStores(ShoeStore shoeStores);

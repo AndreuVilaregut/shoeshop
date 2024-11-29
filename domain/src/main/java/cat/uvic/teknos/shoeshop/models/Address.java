@@ -1,6 +1,6 @@
 package cat.uvic.teknos.shoeshop.models;
 
-public interface Address {
+public interface Address{
 
     int getId();
 

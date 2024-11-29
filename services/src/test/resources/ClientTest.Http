@@ -1,0 +1,48 @@
+GET http://localhost:9998/client/
+Accept: application/json
+
+####
+POST http://localhost:9998/client/
+Accept: application/json
+Content-Type: application/json
+
+{
+  "addresses": {
+    "location": "ASDFSADFASDASDFASDFDAS"
+  },
+  "dni": "12345678A",
+  "name": "ASDFASFASDFSFSDAFASFDDSAFASDFASDFASDF",
+  "phone": "123456789",
+  "shoeStores": {
+    "name": "Doe's Shoes",
+    "owner": "John Doe",
+    "location": "Downtown"
+  }
+}
+
+
+####
+
+PUT http://localhost:9999/client/14
+Accept: application/json
+Content-Type: application/json
+
+{
+  "addresses": {
+    "location": "123 Main St"
+  },
+  "dni": "12345678A",
+  "name": "aaaaaaaa",
+  "phone": "123456789",
+  "shoeStores": {
+    "name": "Doe's Shoes",
+    "owner": "John Doe",
+    "location": "Downtown"
+  }
+}
+
+####
+
+DELETE http://localhost:9999/client/
+Accept: application/json
+

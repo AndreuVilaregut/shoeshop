@@ -43,15 +43,15 @@ public class JdbcClientRepository implements ClientRepository {
             connection.setAutoCommit(false);
 
             // Insert address if it doesn't exist
-            if (model.getAddress().getId() <= 0) {
-                insertAddress(model.getAddress());
+            if (model.getAddresses().getId() <= 0) {
+                insertAddress(model.getAddresses());
             }
 
             try (PreparedStatement clientStatement = connection.prepareStatement(INSERT_CLIENT, Statement.RETURN_GENERATED_KEYS)) {
                 clientStatement.setString(1, model.getDni());
                 clientStatement.setString(2, model.getName());
                 clientStatement.setString(3, model.getPhone());
-                clientStatement.setInt(4, model.getAddress().getId());
+                clientStatement.setInt(4, model.getAddresses().getId());
 
                 clientStatement.executeUpdate();
 
@@ -89,15 +89,15 @@ public class JdbcClientRepository implements ClientRepository {
             connection.setAutoCommit(false);
 
             // Update address
-            if (model.getAddress().getId() > 0) {
-                updateAddress(model.getAddress());
+            if (model.getAddresses().getId() > 0) {
+                updateAddress(model.getAddresses());
             }
 
             try (PreparedStatement clientStatement = connection.prepareStatement(UPDATE_CLIENT)) {
                 clientStatement.setString(1, model.getDni());
                 clientStatement.setString(2, model.getName());
                 clientStatement.setString(3, model.getPhone());
-                clientStatement.setInt(4, model.getAddress().getId());
+                clientStatement.setInt(4, model.getAddresses().getId());
                 clientStatement.setInt(5, model.getId());
 
                 clientStatement.executeUpdate();
@@ -157,9 +157,9 @@ public class JdbcClientRepository implements ClientRepository {
                 clientStatement.executeUpdate();
             }
 
-            if (model.getAddress() != null) {
+            if (model.getAddresses() != null) {
                 try (PreparedStatement addressStatement = connection.prepareStatement(DELETE_ADDRESS)) {
-                    addressStatement.setInt(1, model.getAddress().getId());
+                    addressStatement.setInt(1, model.getAddresses().getId());
                     addressStatement.executeUpdate();
                 }
             }
@@ -234,7 +234,7 @@ public class JdbcClientRepository implements ClientRepository {
 
         int addressId = resultSet.getInt("ADDRESS_ID");
         Address address = getAddressById(addressId);
-        client.setAddress(address);
+        client.setAddresses(address);
 
         return client;
     }

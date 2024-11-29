@@ -1,0 +1,47 @@
+GET http://localhost:9999/shoe
+Accept: application/json
+
+####
+POST http://localhost:9999/shoe
+Accept: application/json
+Content-Type: application/json
+
+{
+  "price": 110.0,
+  "color": "Red",
+  "size": "42",
+  "models": {
+    "id": 3,
+    "name": "AirMax",
+    "brand": "Nike"
+  },
+  "inventories": {
+    "id": 3,
+    "capacity": 500
+  }
+}
+####
+
+PUT http://localhost:9999/shoe/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "price": 115.0,
+  "color": "Andreu",
+  "size": "44",
+  "models": {
+    "id": 3,
+    "name": "Classic",
+    "brand": "Nike"
+  },
+  "inventories": {
+    "id": 3,
+    "capacity": 1000
+  }
+}
+
+####
+
+DELETE http://localhost:9999/shoe/6
+Accept: application/json
