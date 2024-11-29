@@ -12,9 +12,9 @@ INSERT INTO MODEL (NAME, BRAND) VALUES ('Air Max', 'Nike');
 INSERT INTO MODEL (NAME, BRAND) VALUES ('Superstar', 'Adidas');
 INSERT INTO MODEL (NAME, BRAND) VALUES ('Classic', 'Reebok');
 
-INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Carrer de la Marina', 'Martí Corder', 'Carrer de la Marina, 1, Barcelona');
-INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Avinguda Diagonal', 'Martí Corder', 'Avinguda Diagonal, 200, Barcelona');
-INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Passeig de Gràcia', 'Martí Corder', 'Passeig de Gràcia, 50, Barcelona');
+INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Carrer de la Marina', 'Andreu Vilaregut', 'Carrer de la Marina, 1, Barcelona');
+INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Avinguda Diagonal', 'Andreu Vilaregut', 'Avinguda Diagonal, 200, Barcelona');
+INSERT INTO SHOE_STORE (NAME, OWNER, LOCATION) VALUES ('Foot MDN - Passeig de Gràcia', 'Andreu Vilaregut', 'Passeig de Gràcia, 50, Barcelona');
 
 INSERT INTO SUPPLIER (NAME, PHONE) VALUES ('Global Shoes', '123456789');
 INSERT INTO SUPPLIER (NAME, PHONE) VALUES ('Top Footwear', '987654321');
