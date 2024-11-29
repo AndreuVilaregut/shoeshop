@@ -5,4 +5,5 @@ import rawhttp.core.RawHttpResponse;
 
 public interface RequestRouter {
     RawHttpResponse<?> route(RawHttpRequest request);
+
 }

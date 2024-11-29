@@ -56,34 +56,43 @@ public class ClientController implements Controller {
     @Override
     public void post(String json) {
         try {
-            Client client = mapper.readValue(json, cat.uvic.teknos.shoeshop.domain.jdbc.models.Client.class);
+            // Substituir Client.class per la implementació concreta (per exemple, JdbcClient)
+            cat.uvic.teknos.shoeshop.domain.jdbc.models.Client client =
+                    mapper.readValue(json, cat.uvic.teknos.shoeshop.domain.jdbc.models.Client.class);
 
-            // Validar que el client conté les dades necessàries
+            // Validar el client deserialitzat
             validateClient(client);
 
-            // Crear adreça si no té ID
-            if (client.getAddresses() != null && client.getAddresses().getId() <= 0) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(System.in));  // Crear un BufferedReader per llegir de la consola
-                out.print("Enter Address Location: ");
-                String addressLocation = readLine(in); // Passar el BufferedReader a readLine()
-
-                // Crear un JSON per deserialitzar l'adreça
-                String addressJson = "{\"location\":\"" + addressLocation + "\"}";
-                Address address = mapper.readValue(addressJson, Address.class);
-                client.setAddresses(address);
+            // Crear o validar Address
+            if (client.getAddresses() != null) {
+                Address address = client.getAddresses();
+                if (address.getLocation() == null || address.getLocation().isEmpty()) {
+                    throw new IllegalArgumentException("Address location is required");
+                }
             }
 
-            // Crear la botiga si no té ID
-            if (client.getShoeStores() != null && client.getShoeStores().getId() <= 0) {
-                ShoeStore store = new cat.uvic.teknos.shoeshop.domain.jdbc.models.ShoeStore();
-                store.setName(client.getShoeStores().getName());
-                store.setLocation(client.getShoeStores().getLocation());
-                store.setOwner(client.getShoeStores().getOwner());
-                client.setShoeStores(store);
+            // Crear o validar ShoeStore
+            if (client.getShoeStores() != null) {
+                ShoeStore shoeStore = client.getShoeStores();
+                if (shoeStore.getName() == null || shoeStore.getName().isEmpty()) {
+                    throw new IllegalArgumentException("ShoeStore name is required");
+                }
+                if (shoeStore.getLocation() == null || shoeStore.getLocation().isEmpty()) {
+                    throw new IllegalArgumentException("ShoeStore location is required");
+                }
+                if (shoeStore.getOwner() == null || shoeStore.getOwner().isEmpty()) {
+                    throw new IllegalArgumentException("ShoeStore owner is required");
+                }
             }
 
             // Guardar al repositori
             clientRepository.save(client);
+            System.out.println("Client created successfully: " + mapper.writeValueAsString(client));
+
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Validation error: " + e.getMessage(), e);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error deserializing JSON: " + e.getMessage(), e);
         } catch (Exception e) {
             throw new RuntimeException("Error during POST: " + e.getMessage(), e);
         }

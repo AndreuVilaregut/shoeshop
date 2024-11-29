@@ -73,7 +73,7 @@ public class    App {
                     if (!command.equalsIgnoreCase("exit")) {
                         System.out.println("Comanda invàlida");
                     } else {
-                        server.shutDown();
+                        server.stop();
                     }
                     break;
             }

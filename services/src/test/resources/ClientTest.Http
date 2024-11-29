@@ -7,18 +7,19 @@ Accept: application/json
 Content-Type: application/json
 
 {
+  "dni": "87654321B",
+  "name": "Albert",
+  "phone": "987654321",
   "addresses": {
-    "location": "ASDFSADFASDASDFASDFDAS"
+    "location": "Passeig de Gràcia"
   },
-  "dni": "12345678A",
-  "name": "ASDFASFASDFSFSDAFASFDDSAFASDFASDFASDF",
-  "phone": "123456789",
   "shoeStores": {
-    "name": "Doe's Shoes",
-    "owner": "John Doe",
-    "location": "Downtown"
+    "name": "Elegant Shoes",
+    "owner": "Anna",
+    "location": "Barcelona"
   }
 }
+
 
 
 ####

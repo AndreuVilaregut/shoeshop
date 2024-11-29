@@ -54,10 +54,11 @@ public class AddressManager {
 
     private void listAddresses() {
         try {
-            // Obtenim la resposta JSON del servidor
+            // Get the raw JSON response as a string
             String jsonResponse = restClient.get("/address", String.class);
+            System.out.println("🔍 JSON Response: " + jsonResponse);
 
-            // Deserialitzem el JSON com a array d'AddressDto
+            // Now attempt to deserialize the JSON into AddressDto[]
             AddressDto[] addresses = mapper.readValue(jsonResponse, AddressDto[].class);
 
             if (addresses.length == 0) {
@@ -76,8 +77,6 @@ public class AddressManager {
             System.out.println("❌ JSON Parsing Error: " + e.getMessage());
         }
     }
-
-
 
     private void getAddressById() throws IOException {
         System.out.print("\nEnter address ID: ");

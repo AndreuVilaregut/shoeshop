@@ -1,4 +1,4 @@
-package cat.uvic.teknos.coursemanagement.cryptoutils;
+package cat.uvic.teknos.shoeshop.cryptoutils;
 
 import cat.uvic.teknos.shoeshop.cryptoutils.CryptoUtils;
 import org.junit.jupiter.api.Test;

@@ -1,15 +1,17 @@
 package cat.uvic.teknos.shoeshop.clients.manager;
 
 import cat.uvic.teknos.shoeshop.clients.dto.ClientDto;
-import cat.uvic.teknos.shoeshop.clients.exceptions.RequestException;
+import cat.uvic.teknos.shoeshop.models.Address;
+import cat.uvic.teknos.shoeshop.models.ShoeStore;
 import cat.uvic.teknos.shoeshop.clients.utils.Mappers;
 import cat.uvic.teknos.shoeshop.clients.utils.RestClient;
+import cat.uvic.teknos.shoeshop.clients.exceptions.RequestException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Arrays;
 
 public class ClientManager {
 
@@ -63,11 +65,7 @@ public class ClientManager {
 
         out.println("\n📋 === Client List ===");
         for (var client : clients) {
-            out.printf("%-20s: %-30s%n", "📍 Name", client.getName());
-            out.printf("%-20s: %-30s%n", "📍 DNI", client.getDni());
-            out.printf("%-20s: %-30s%n", "📍 Phone", client.getPhone());
-            out.printf("%-20s: %-30s%n", "📍 Address", client.getAddresses() != null ? client.getAddresses().getLocation() : "N/A");
-            out.println("-".repeat(50));
+            printClientDetails(client);
         }
     }
 
@@ -77,19 +75,11 @@ public class ClientManager {
 
         try {
             var client = restClient.get("/client/" + id, ClientDto.class);
-
             if (client == null) {
                 out.println("⚠️  Client with ID " + id + " not found.");
                 return;
             }
-
-            out.println("\n📋 === Client Details ===");
-            out.printf("%-20s: %-30s%n", "📍 ID", client.getId());
-            out.printf("%-20s: %-30s%n", "📍 Name", client.getName());
-            out.printf("%-20s: %-30s%n", "📍 DNI", client.getDni());
-            out.printf("%-20s: %-30s%n", "📍 Phone", client.getPhone());
-            out.printf("%-20s: %-30s%n", "📍 Address", client.getAddresses() != null ? client.getAddresses().getLocation() : "N/A");
-            out.println("=".repeat(50));
+            printClientDetails(client);
 
         } catch (RequestException e) {
             out.println("❌ Error fetching client: " + e.getMessage());
@@ -97,57 +87,13 @@ public class ClientManager {
     }
 
     private void createClient() throws IOException {
-        // Demanar dades per al client
-        out.print("\nEnter Name: ");
-        String name = readLine();
-
-        out.print("Enter DNI: ");
-        String dni = readLine();
-
-        out.print("Enter Phone: ");
-        String phone = readLine();
-
-        // Crear Address per l'adreça
-        out.print("Enter Address Location: ");
-        String addressLocation = readLine(); // Capturar la ubicació de l'adreça
-
-        var address = new cat.uvic.teknos.shoeshop.clients.dto.AddressDto(); // Creem la classe concreta Address
-        address.setLocation(addressLocation); // Assignar la ubicació a l'adreça
-
-        // Crear ShoeStore per la botiga
-        out.print("Enter Shoe Store Name: ");
-        var shoeStore = new cat.uvic.teknos.shoeshop.clients.dto.ShoeStoreDto(); // Creem la classe concreta ShoeStore
-        shoeStore.setName(readLine());
-
-        out.print("Enter Shoe Store Owner: ");
-        shoeStore.setOwner(readLine());
-
-        out.print("Enter Shoe Store Location: ");
-        shoeStore.setLocation(readLine());
-
-        // Crear ClientDto i associar l'adreça i la botiga de sabates
-        var clientDto = new ClientDto();
-        clientDto.setName(name);
-        clientDto.setDni(dni);
-        clientDto.setPhone(phone);
-        clientDto.setAddresses(address); // Afegir adreça
-        clientDto.setShoeStores(shoeStore); // Afegir shoe store
+        ClientDto client = readClientDetails();
 
         try {
-            // Comprovar el valor de l'adreça per garantir que es captura bé
-            System.out.println("Address Location: " + clientDto.getAddresses());  // Afegir per verificar
-
-            // Convertir l'objecte clientDto a JSON per enviar-lo
-            String clientJson = Mappers.get().writeValueAsString(clientDto); // Serialització correcte a JSON
-
-            // Mostrar el JSON per verificar la correcta serialització
-            System.out.println("Client JSON: " + clientJson);  // Afegir per veure el JSON generat
-
-            // Enviar la petició al servidor REST
+            String clientJson = Mappers.get().writeValueAsString(client);
             restClient.post("/client", clientJson);
-
             out.println("✅ Client created successfully!");
-        } catch (RequestException | JsonProcessingException e) {
+        } catch (JsonProcessingException | RequestException e) {
             out.println("❌ Error creating client: " + e.getMessage());
         }
     }
@@ -164,34 +110,13 @@ public class ClientManager {
             }
 
             out.println("\n📋 === Editing Client ===");
-            out.printf("%-20s: %-30s%n", "📍 Current Name", existingClient.getName());
-            out.print("Enter new Name (leave blank to keep current): ");
-            String name = readLine();
-            if (!name.isBlank()) existingClient.setName(name);
+            ClientDto updates = readClientDetails(existingClient);
 
-            out.printf("%-20s: %-30s%n", "📍 Current DNI", existingClient.getDni());
-            out.print("Enter new DNI (leave blank to keep current): ");
-            String dni = readLine();
-            if (!dni.isBlank()) existingClient.setDni(dni);
-
-            out.printf("%-20s: %-30s%n", "📍 Current Phone", existingClient.getPhone());
-            out.print("Enter new Phone (leave blank to keep current): ");
-            String phone = readLine();
-            if (!phone.isBlank()) existingClient.setPhone(phone);
-
-            out.printf("%-20s: %-30s%n", "📍 Current Address", existingClient.getAddresses() != null ? existingClient.getAddresses().getLocation() : "N/A");
-            out.print("Enter new Address Location (leave blank to keep current): ");
-            String address = readLine();
-            if (!address.isBlank()) {
-                var newAddress = new cat.uvic.teknos.shoeshop.clients.dto.AddressDto();
-                newAddress.setLocation(address);
-                existingClient.setAddresses(newAddress);
-            }
-
-            restClient.put("/client/" + id, Mappers.get().writeValueAsString(existingClient));
+            String updatesJson = Mappers.get().writeValueAsString(updates);
+            restClient.put("/client/" + id, updatesJson);
             out.println("✅ Client updated successfully!");
 
-        } catch (RequestException e) {
+        } catch (RequestException | JsonProcessingException e) {
             out.println("❌ Error updating client: " + e.getMessage());
         }
     }
@@ -214,5 +139,57 @@ public class ClientManager {
         } catch (IOException e) {
             throw new RuntimeException("❌ Error reading from console: " + e.getMessage(), e);
         }
+    }
+
+    private ClientDto readClientDetails() throws IOException {
+        return readClientDetails(null);
+    }
+
+    private ClientDto readClientDetails(ClientDto existingClient) throws IOException {
+        var client = existingClient != null ? existingClient : new ClientDto();
+
+        out.printf("Enter Name [%s]: ", existingClient != null ? existingClient.getName() : "N/A");
+        String name = readLine();
+        if (!name.isBlank()) client.setName(name);
+
+        out.printf("Enter DNI [%s]: ", existingClient != null ? existingClient.getDni() : "N/A");
+        String dni = readLine();
+        if (!dni.isBlank()) client.setDni(dni);
+
+        out.printf("Enter Phone [%s]: ", existingClient != null ? existingClient.getPhone() : "N/A");
+        String phone = readLine();
+        if (!phone.isBlank()) client.setPhone(phone);
+
+        out.printf("Enter Address [%s]: ", existingClient != null && existingClient.getAddresses() != null
+                ? existingClient.getAddresses().getLocation() : "N/A");
+        String address = readLine();
+        if (!address.isBlank()) {
+            var addressDto = new cat.uvic.teknos.shoeshop.clients.dto.AddressDto();
+            addressDto.setLocation(address);
+            client.setAddresses(addressDto);
+        }
+
+        out.printf("Enter ShoeStore Name [%s]: ", existingClient != null && existingClient.getShoeStores() != null
+                ? existingClient.getShoeStores().getName() : "N/A");
+        String storeName = readLine();
+        if (!storeName.isBlank()) {
+            var shoeStore = new cat.uvic.teknos.shoeshop.clients.dto.ShoeStoreDto();
+            shoeStore.setName(storeName);
+            client.setShoeStores(shoeStore);
+        }
+
+        return client;
+    }
+
+    private void printClientDetails(ClientDto client) {
+        out.printf("📍 ID: %d%n", client.getId());
+        out.printf("📍 Name: %s%n", client.getName());
+        out.printf("📍 DNI: %s%n", client.getDni());
+        out.printf("📍 Phone: %s%n", client.getPhone());
+        out.printf("📍 Address: %s%n",
+                client.getAddresses() != null ? client.getAddresses().getLocation() : "N/A");
+        out.printf("📍 ShoeStore: %s%n",
+                client.getShoeStores() != null ? client.getShoeStores().getName() : "N/A");
+        out.println("=".repeat(50));
     }
 }
