@@ -23,6 +23,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/clients" />
             <option value="$PROJECT_DIR$/clients/console" />
+            <option value="$PROJECT_DIR$/cryptoutiles" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain-implementations" />
             <option value="$PROJECT_DIR$/domain-implementations/JPA" />

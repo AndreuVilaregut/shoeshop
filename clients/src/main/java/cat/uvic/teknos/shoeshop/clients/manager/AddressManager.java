@@ -4,9 +4,13 @@ import cat.uvic.teknos.shoeshop.clients.dto.AddressDto;
 import cat.uvic.teknos.shoeshop.clients.utils.Mappers;
 import cat.uvic.teknos.shoeshop.clients.utils.RestClient;
 import cat.uvic.teknos.shoeshop.clients.exceptions.RequestException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
+
+import static cat.uvic.teknos.shoeshop.clients.utils.Mappers.mapper;
 
 public class AddressManager {
 
@@ -50,7 +54,11 @@ public class AddressManager {
 
     private void listAddresses() {
         try {
-            var addresses = restClient.getAll("/address", AddressDto[].class);
+            // Obtenim la resposta JSON del servidor
+            String jsonResponse = restClient.get("/address", String.class);
+
+            // Deserialitzem el JSON com a array d'AddressDto
+            AddressDto[] addresses = mapper.readValue(jsonResponse, AddressDto[].class);
 
             if (addresses.length == 0) {
                 System.out.println("⚠️  No addresses found.");
@@ -64,8 +72,12 @@ public class AddressManager {
             }
         } catch (RequestException e) {
             System.out.println("❌ Error fetching addresses: " + e.getMessage());
+        } catch (JsonProcessingException e) {
+            System.out.println("❌ JSON Parsing Error: " + e.getMessage());
         }
     }
+
+
 
     private void getAddressById() throws IOException {
         System.out.print("\nEnter address ID: ");

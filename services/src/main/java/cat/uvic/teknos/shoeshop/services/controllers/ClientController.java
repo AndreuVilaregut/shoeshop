@@ -4,9 +4,14 @@ import cat.uvic.teknos.shoeshop.models.Address;
 import cat.uvic.teknos.shoeshop.models.Client;
 import cat.uvic.teknos.shoeshop.models.ShoeStore;
 import cat.uvic.teknos.shoeshop.repositories.ClientRepository;
+import cat.uvic.teknos.shoeshop.services.clients.IOUtils;
 import cat.uvic.teknos.shoeshop.services.utils.CustomObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import static cat.uvic.teknos.shoeshop.services.clients.IOUtils.readLine;
 import static java.lang.System.out;
@@ -50,9 +55,39 @@ public class ClientController implements Controller {
 
     @Override
     public void post(String json) {
+        try {
+            Client client = mapper.readValue(json, cat.uvic.teknos.shoeshop.domain.jdbc.models.Client.class);
 
+            // Validar que el client conté les dades necessàries
+            validateClient(client);
+
+            // Crear adreça si no té ID
+            if (client.getAddresses() != null && client.getAddresses().getId() <= 0) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(System.in));  // Crear un BufferedReader per llegir de la consola
+                out.print("Enter Address Location: ");
+                String addressLocation = readLine(in); // Passar el BufferedReader a readLine()
+
+                // Crear un JSON per deserialitzar l'adreça
+                String addressJson = "{\"location\":\"" + addressLocation + "\"}";
+                Address address = mapper.readValue(addressJson, Address.class);
+                client.setAddresses(address);
+            }
+
+            // Crear la botiga si no té ID
+            if (client.getShoeStores() != null && client.getShoeStores().getId() <= 0) {
+                ShoeStore store = new cat.uvic.teknos.shoeshop.domain.jdbc.models.ShoeStore();
+                store.setName(client.getShoeStores().getName());
+                store.setLocation(client.getShoeStores().getLocation());
+                store.setOwner(client.getShoeStores().getOwner());
+                client.setShoeStores(store);
+            }
+
+            // Guardar al repositori
+            clientRepository.save(client);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during POST: " + e.getMessage(), e);
+        }
     }
-
 
     @Override
     public void put(int id, String json) {

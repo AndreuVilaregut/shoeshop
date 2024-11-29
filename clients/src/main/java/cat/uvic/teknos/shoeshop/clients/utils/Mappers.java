@@ -6,7 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cat.uvic.teknos.shoeshop.models.Model;
 
 public class Mappers {
-    private static final ObjectMapper mapper;
+    public static final ObjectMapper mapper;
 
     static  {
         SimpleModule addressTypeMapping = new SimpleModule()

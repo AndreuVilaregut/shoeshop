@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import static cat.uvic.teknos.shoeshop.services.clients.IOUtils.readLine;
 
-public class App {
+public class    App {
     private static final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
