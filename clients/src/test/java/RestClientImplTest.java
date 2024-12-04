@@ -19,7 +19,7 @@ class RestClientImplTest {
     void getAllShoesTest() {
         var restClient = new RestClientImpl(HOST, PORT);
         try {
-            ShoeDto[] shoe = restClient.getAll("/shoe", ShoeDto[].class);
+            ShoeDto[] shoe = restClient.getAll("shoe", ShoeDto[].class);
 
             assertNotNull(shoe);
             assertTrue(shoe.length > 0, "There should be at least one shoe in the response.");

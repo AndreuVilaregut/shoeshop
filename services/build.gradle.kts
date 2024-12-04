@@ -18,6 +18,9 @@ dependencies {
     implementation("com.athaydes.rawhttp:rawhttp-core:2.6.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.0")
+    implementation("org.slf4j:slf4j-api:2.0.0-alpha1")
+    implementation("org.slf4j:slf4j-log4j12:2.0.0-alpha1")
+    implementation("ch.qos.logback:logback-classic:1.2.6")
 
 }
 

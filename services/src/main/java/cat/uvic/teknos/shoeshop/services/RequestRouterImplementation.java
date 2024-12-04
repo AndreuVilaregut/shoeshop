@@ -6,65 +6,91 @@ import cat.uvic.teknos.shoeshop.services.exceptions.ResourceNotFoundException;
 import rawhttp.core.RawHttp;
 import rawhttp.core.RawHttpRequest;
 import rawhttp.core.RawHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.*;
 import java.security.cert.CertificateException;
+import java.util.Base64;
 import java.util.Map;
 
 public class RequestRouterImplementation implements RequestRouter {
     private static final RawHttp rawHttp = new RawHttp();
     private final Map<String, Controller> controllers;
     private final PrivateKey privateKey;
+    private static final Logger logger = LoggerFactory.getLogger(RequestRouterImplementation.class);
 
     // Constructor to initialize with controllers and privateKey
     public RequestRouterImplementation(Map<String, Controller> controllers) {
         this.controllers = controllers;
-        this.privateKey = loadPrivateKey(); // Load the private key from keystore
+        this.privateKey = loadPrivateKey(); // Load private key from keystore
     }
 
     // Load the private key from a PKCS12 keystore
     private PrivateKey loadPrivateKey() {
         try {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            // Replace "/server.p12" with the actual path to your keystore file
             keyStore.load(RequestRouterImplementation.class.getResourceAsStream("/server.p12"), "Teknos01.".toCharArray());
             return (PrivateKey) keyStore.getKey("server", "Teknos01.".toCharArray());
         } catch (KeyStoreException | UnrecoverableKeyException | IOException | NoSuchAlgorithmException | CertificateException e) {
-            throw new RuntimeException("Error loading private key", e);
+            throw new RuntimeException("Error loading the private key", e);
         }
     }
 
-    @Override
+    // Check if a string is valid Base64
+    private boolean isBase64Encoded(String input) {
+        try {
+            Base64.getDecoder().decode(input);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     public RawHttpResponse<?> route(RawHttpRequest request) {
         try {
-            // Extract the encrypted symmetric key from the request headers
+            // Debugging: Print headers and request method/path
+            logger.debug("Request Headers: {}", request.getHeaders());
+            logger.debug("Request Method: {}", request.getMethod());
+            logger.debug("Request Path: {}", request.getUri().getPath());
+
+            // Extract the encrypted symmetric key from request headers
             String encryptedKeyBase64 = request.getHeaders().get("X-Symmetric-Key").stream()
                     .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No Encrypted Key Found"));
+                    .orElseThrow(() -> {
+                        logger.warn("No Encrypted Key Found in headers");
+                        return new RuntimeException("No Encrypted Key Found");
+                    });
+
+            // Check if the encrypted symmetric key is Base64 valid
+            if (!isBase64Encoded(encryptedKeyBase64)) {
+                throw new RuntimeException("Invalid encrypted symmetric key (incorrect Base64 encoding)");
+            }
 
             // Decrypt the symmetric key using the private key
             SecretKey symmetricKey = CryptoUtils.asymmetricDecrypt(encryptedKeyBase64, privateKey);
+            logger.debug("Symmetric key decrypted successfully");
 
             // Decrypt the body of the request, if it exists
             String decryptedBody = "";
-            if (request.getBody().isPresent()) {
+            if (request.getBody().isPresent() && !request.getBody().get().decodeBodyToString(Charset.defaultCharset()).isEmpty()) {
                 String encryptedBody = request.getBody().get().decodeBodyToString(Charset.defaultCharset());
-                if (!encryptedBody.isEmpty()) {
-                    decryptedBody = CryptoUtils.decrypt(encryptedBody, symmetricKey);
-                }
+                decryptedBody = CryptoUtils.decrypt(encryptedBody, symmetricKey);
+                logger.debug("Decrypted request body: {}", decryptedBody);
             }
 
-            // Process the request based on the HTTP method and path
+            // Process the request based on HTTP method and path
             var path = request.getUri().getPath();
             var method = request.getMethod();
             var pathParts = path.split("/");
 
+            // Call the appropriate controller handler for the request
             String responseJsonBody = handleRequest(method, pathParts, decryptedBody);
 
-            // Encrypt the response before sending it back
+            // Encrypt the response before sending
             String encryptedResponse = CryptoUtils.encrypt(responseJsonBody, symmetricKey);
             String responseHash = CryptoUtils.getHash(encryptedResponse);
 
@@ -80,6 +106,7 @@ public class RequestRouterImplementation implements RequestRouter {
         } catch (ResourceNotFoundException e) {
             return generateErrorResponse(404, "Not Found: " + e.getMessage());
         } catch (Exception e) {
+            logger.error("Internal server error occurred: ", e);
             return generateErrorResponse(500, "Internal Server Error: " + e.getMessage());
         }
     }
