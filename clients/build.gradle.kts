@@ -8,6 +8,7 @@ plugins {
 
 dependencies {
     implementation("org.apache.commons:commons-text")
+    implementation(project(":cryptoutiles"))
     implementation(project(":utilities"))
     implementation(project(":domain-implementations:jdbc"))
     implementation(project(":domain-implementations:JPA"))

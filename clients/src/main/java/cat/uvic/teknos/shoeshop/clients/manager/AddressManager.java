@@ -1,3 +1,4 @@
+/*
 package cat.uvic.teknos.shoeshop.clients.manager;
 
 import cat.uvic.teknos.shoeshop.clients.dto.AddressDto;
@@ -149,3 +150,4 @@ public class AddressManager {
         }
     }
 }
+*/

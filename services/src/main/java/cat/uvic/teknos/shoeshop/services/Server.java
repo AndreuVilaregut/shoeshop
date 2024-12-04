@@ -39,12 +39,12 @@ public class Server {
                     threadPool.submit(() -> handleClientRequest(clientSocket));
                 } catch (IOException e) {
                     if (!SHUTDOWN_SERVER) {
-                        throw new cat.uvic.teknos.shoeshop.services.exceptions.ServerException("Error accepting connection", e);
+                        throw new ServerException("Error accepting connection", e);
                     }
                 }
             }
         } catch (IOException e) {
-            throw new cat.uvic.teknos.shoeshop.services.exceptions.ServerException("Server error", e);
+            throw new ServerException("Server error", e);
         } finally {
             shutdownThreadPool();
             shutdownScheduler();
@@ -59,6 +59,7 @@ public class Server {
             response.writeTo(clientSocket.getOutputStream());
         } catch (Exception e) {
             System.err.println("Error handling client request: " + e.getMessage());
+            // You can log more details or return a custom error message to the client here if necessary
         }
     }
 

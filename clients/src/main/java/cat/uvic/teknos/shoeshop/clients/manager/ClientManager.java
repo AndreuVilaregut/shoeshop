@@ -1,3 +1,4 @@
+/*
 package cat.uvic.teknos.shoeshop.clients.manager;
 
 import cat.uvic.teknos.shoeshop.clients.dto.ClientDto;
@@ -193,3 +194,4 @@ public class ClientManager {
         out.println("=".repeat(50));
     }
 }
+*/

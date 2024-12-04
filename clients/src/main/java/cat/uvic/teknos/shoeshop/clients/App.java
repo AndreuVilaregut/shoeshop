@@ -1,7 +1,7 @@
 package cat.uvic.teknos.shoeshop.clients;
 
-import cat.uvic.teknos.shoeshop.clients.manager.AddressManager;
-import cat.uvic.teknos.shoeshop.clients.manager.ClientManager;
+//import cat.uvic.teknos.shoeshop.clients.manager.AddressManager;
+//import cat.uvic.teknos.shoeshop.clients.manager.ClientManager;
 import cat.uvic.teknos.shoeshop.clients.manager.ShoeManager;
 import cat.uvic.teknos.shoeshop.clients.manager.ShoeStoreManager;
 import cat.uvic.teknos.shoeshop.clients.utils.RestClient;
@@ -52,9 +52,9 @@ public class App {
             command = IOUtils.readLine(in);  // Llegir la línia d'entrada des de la consola
 
             switch (command) {
-                case "1" -> new ClientManager(restClient, in).start();
+                //case "1" -> new ClientManager(restClient, in).start();
                 case "2" -> new ShoeManager(restClient, in).start();
-                case "3" -> new AddressManager(restClient, in).start();
+                //case "3" -> new AddressManager(restClient, in).start();
                 default -> {
                     if (!command.equalsIgnoreCase("exit")) {
                         out.println("Opció invàlida. Torna-ho a provar.");

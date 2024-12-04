@@ -6,6 +6,11 @@ plugins {
     id("buildlogic.java-library-conventions")
 }
 
+
+dependencies{
+    implementation("org.bouncycastle:bcprov-jdk18on:1.78")
+}
+
 tasks.jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from ("./src/main/resources") {
